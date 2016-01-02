@@ -27,7 +27,7 @@ Your Machine IP is `192.168.1.2` and your `/etc/hosts` file has this entry `192.
 
 You can proxy spcific path using this command:
 ```
-./proxy-imgs -p 8080 -o "http://192.168.2.10:80" -r "http://remote-site.org:80" -f ""wp-content/uploads/*"
+./proxy-imgs -p 8080 -o "http://192.168.2.10:80" -r "http://remote-site.org:80" -f "wp-content/uploads/*"
 ```
 and navigate your local site browsing http://local-site.dev:8080.
 
