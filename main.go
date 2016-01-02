@@ -23,7 +23,7 @@ func init() {
 
 	flag.StringVar(&flagOrigin, "o", "", `Origin site: -o "http://site1.dev:80"`)
 	flag.StringVar(&flagRemote, "r", "", `Remote site: -r "http://site2.dev:80"`)
-	flag.BoolVar(&flagCheckStatus, "s", false, "if remote site gives error code > 400, request will be proxy to Origin. Default FALSE")
+	flag.BoolVar(&flagCheckStatus, "s", false, "if remote site gives error code >= 400, request will be proxy to Origin. Default FALSE")
 	flag.IntVar(&flagBindPort, "p", 80, "Port where bind the service: -p 8081 bind service to port")
 
 	flag.Var(&flagRegexp, "f", `Patter to proxy to Remote site: -f ".jpg?" -f "wp-content/uploads/*"`)
@@ -109,7 +109,7 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 					log.Printf("Error sub-request to check the status code: %s", err)
 				}
 
-				if err != nil || resp.StatusCode > 400 {
+				if err != nil || resp.StatusCode >= 400 {
 					editRequest(origin, origin.RawQuery, req)
 				}
 			}
