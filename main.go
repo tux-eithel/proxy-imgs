@@ -21,12 +21,12 @@ var (
 
 func init() {
 
-	flag.StringVar(&flagOrigin, "o", "", `-o "http://site1.dev:80"`)
-	flag.StringVar(&flagRemote, "r", "", `-r "http://site2.dev:80"`)
-	flag.BoolVar(&flagCheckStatus, "s", false, "if remote gives error code > 400, request will be proxy to Origin. Default FALSE")
-	flag.IntVar(&flagBindPort, "p", 80, "-p 8081 bind service to port")
+	flag.StringVar(&flagOrigin, "o", "", `Origin site: -o "http://site1.dev:80"`)
+	flag.StringVar(&flagRemote, "r", "", `Remote site: -r "http://site2.dev:80"`)
+	flag.BoolVar(&flagCheckStatus, "s", false, "if remote site gives error code > 400, request will be proxy to Origin. Default FALSE")
+	flag.IntVar(&flagBindPort, "p", 80, "Port where bind the service: -p 8081 bind service to port")
 
-	flag.Var(&flagRegexp, "f", `-f ".jpg?" -f "wp-content/uploads/*"`)
+	flag.Var(&flagRegexp, "f", `Patter to proxy to Remote site: -f ".jpg?" -f "wp-content/uploads/*"`)
 
 }
 
