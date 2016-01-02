@@ -8,7 +8,7 @@ If you navigate the site, you will see the site "broken" because all the images 
 Using this little script you can proxy specific path to another site
 
 ###Install
-`go get -u github.org/tux-eithel/proxy-imgs`
+`go get -u github.com/tux-eithel/proxy-imgs`
 
 ###Example
 Your local website is iside a VM and have this data
