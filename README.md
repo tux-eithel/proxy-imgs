@@ -32,14 +32,14 @@ You can proxy spcific path using this command:
 and navigate your local site browsing http://local-site.dev:8080.
 
 
-Now all the traffic that NOT match the  `-f` regular expression will be forwarded to the VM (when local-site.dev is running) meanwhile url which match the `-f` regular expression will be forwarded to orgin.-ite.dev
+Now all the traffic that NOT match the -f regular expression will be forwarded to the VM (where local-site.dev is running) meanwhile, urls which match the -f regular expression will be forwarded to remote-site.org
 
 ###Tips
 You have to use the `ip address` with `-o` flag because Wordpress hard coded domain in urls.
 
 You can specify multiple pattern `-f "*.jpg" -f "*.pdf"`
 
-If you use the `-s` flag, script checks if remote site (`http://remote-site.org` in this example) respond with a status code > 400. If true, request will be forwared to `http://local-site.dev`
+If you use the `-s` flag, script checks if remote site (`http://remote-site.org` in this example) responds with a status code >= 400. If true, request will be forwared to `http://local-site.dev`
 
 ###Help
 ```
@@ -52,6 +52,6 @@ Usage of ./proxy-imgs:
     	Port where bind the service -p 8081 bind service to port (default 80)
   -r string
     	Remote site: -r "http://site2.dev:80"
-  -s	if remote site gives error code > 400, request will be proxy to Origin. Default FALSE
+  -s	if remote site gives error code >= 400, request will be proxy to Origin. Default FALSE
 
 ```
