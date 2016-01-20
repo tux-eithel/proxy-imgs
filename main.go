@@ -12,11 +12,13 @@ import (
 )
 
 var (
-	flagOrigin      string
-	flagRemote      string
-	flagCheckStatus bool
-	flagBindPort    int
-	flagRegexp      Rgxs
+	flagOrigin             string
+	flagOverrideHostOrigin bool
+	flagRemote             string
+	flagOverrideHostRemote bool
+	flagCheckStatus        bool
+	flagBindPort           int
+	flagRegexp             Rgxs
 )
 
 func init() {
@@ -27,6 +29,9 @@ func init() {
 	flag.IntVar(&flagBindPort, "p", 80, "Port where bind the service: -p 8081 bind service to port")
 
 	flag.Var(&flagRegexp, "f", `Patter to proxy to Remote site: -f ".jpg?" -f "wp-content/uploads/*"`)
+
+	flag.BoolVar(&flagOverrideHostOrigin, "oho", false, "force Origin's host site while proxing the input url. Default FALSE")
+	flag.BoolVar(&flagOverrideHostRemote, "ohr", true, "force Remote's host site while proxing the input url. Default TRUE")
 
 }
 
@@ -92,11 +97,11 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 
 		if !match {
 			// didn't match, proxy the request to the Origin
-			editRequest(origin, origin.RawQuery, req, false)
+			editRequest(origin, origin.RawQuery, req, flagOverrideHostOrigin)
 
 		} else {
 			// match! so proxy to the remote server
-			editRequest(remote, remote.RawQuery, req, true)
+			editRequest(remote, remote.RawQuery, req, flagOverrideHostRemote)
 
 			// if checkStatus404, before proxy the request to Remote, check remote server response. If StatuCode > 400, proxy to Origin
 			if checkStatus404 {
@@ -104,14 +109,14 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 				*reqTmp = *req
 				reqTmp.RequestURI = ""
 				reqTmp.URL = req.URL
-				editRequest(remote, remote.RawQuery, reqTmp, true)
+				editRequest(remote, remote.RawQuery, reqTmp, flagOverrideHostRemote)
 				resp, err := http.DefaultClient.Do(reqTmp)
 				if err != nil {
 					log.Printf("Error sub-request to check the status code: %s", err)
 				}
 
 				if err != nil || resp.StatusCode >= 400 {
-					editRequest(origin, origin.RawQuery, req, false)
+					editRequest(origin, origin.RawQuery, req, flagOverrideHostOrigin)
 				}
 			}
 		}
@@ -122,10 +127,10 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 }
 
 // editRequest is copy-paste of https://golang.org/src/net/http/httputil/reverseproxy.go#L69
-func editRequest(target *url.URL, targetQuery string, req *http.Request, passThrough bool) {
+func editRequest(target *url.URL, targetQuery string, req *http.Request, overrideHost bool) {
 	req.URL.Scheme = target.Scheme
 	req.URL.Host = target.Host
-	if passThrough {
+	if overrideHost {
 		req.Host = target.Host
 	}
 
