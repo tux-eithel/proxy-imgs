@@ -44,13 +44,17 @@ If you use the `-s` flag, script checks if remote site (`http://remote-site.org`
 
 ###Help
 ```
-Usage of ./proxy-imgs:
+Usage of ./proxyimgs:
   -f value
     	Patter to proxy to Remote site: -f ".jpg?" -f "wp-content/uploads/*"
   -o string
     	Origin site: -o "http://site1.dev:80"
+  -oho
+    	force Origin's host site while proxing the input url. Default FALSE
+  -ohr
+    	force Remote's host site while proxing the input url. Default TRUE (default true)
   -p int
-    	Port where bind the service -p 8081 bind service to port (default 80)
+    	Port where bind the service: -p 8081 bind service to port (default 80)
   -r string
     	Remote site: -r "http://site2.dev:80"
   -s	if remote site gives error code >= 400, request will be proxy to Origin. Default FALSE
