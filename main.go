@@ -92,10 +92,11 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 
 		if !match {
 			// didn't match, proxy the request to the Origin
-			editRequest(origin, origin.RawQuery, req)
+			editRequest(origin, origin.RawQuery, req, false)
+
 		} else {
 			// match! so proxy to the remote server
-			editRequest(remote, remote.RawQuery, req)
+			editRequest(remote, remote.RawQuery, req, true)
 
 			// if checkStatus404, before proxy the request to Remote, check remote server response. If StatuCode > 400, proxy to Origin
 			if checkStatus404 {
@@ -103,14 +104,14 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 				*reqTmp = *req
 				reqTmp.RequestURI = ""
 				reqTmp.URL = req.URL
-				editRequest(remote, remote.RawQuery, reqTmp)
+				editRequest(remote, remote.RawQuery, reqTmp, true)
 				resp, err := http.DefaultClient.Do(reqTmp)
 				if err != nil {
 					log.Printf("Error sub-request to check the status code: %s", err)
 				}
 
 				if err != nil || resp.StatusCode >= 400 {
-					editRequest(origin, origin.RawQuery, req)
+					editRequest(origin, origin.RawQuery, req, false)
 				}
 			}
 		}
@@ -121,9 +122,13 @@ func prepareDoubleProxy(origin *url.URL, remote *url.URL, toMatch []string, chec
 }
 
 // editRequest is copy-paste of https://golang.org/src/net/http/httputil/reverseproxy.go#L69
-func editRequest(target *url.URL, targetQuery string, req *http.Request) {
+func editRequest(target *url.URL, targetQuery string, req *http.Request, passThrough bool) {
 	req.URL.Scheme = target.Scheme
 	req.URL.Host = target.Host
+	if passThrough {
+		req.Host = target.Host
+	}
+
 	req.URL.Path = singleJoiningSlash(target.Path, req.URL.Path)
 	if targetQuery == "" || req.URL.RawQuery == "" {
 		req.URL.RawQuery = targetQuery + req.URL.RawQuery
