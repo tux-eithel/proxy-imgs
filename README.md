@@ -2,9 +2,6 @@
 Proxy specific path (like images folder) to another server. Made in Go (golang)
 
 
-###Bug
-This [bug](https://github.com/golang/go/issues/13666) cause this error meesage `http: proxy error: net/http: request canceled` (in go1.6beta1)
-
 ###Use case
 You have just synced your repository, and your DB (from production environment) of a WordPress site. Your local site is running in a vm.  
 If you navigate the site, you will see the site "broken" because all the images inside `wp-content/uploads` are not in the repository and they may are expensive to sync (GB and GB of data)
